@@ -1,4 +1,4 @@
-# gui.py
+
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 from PIL import Image, ImageTk
@@ -21,26 +21,27 @@ class MiniPhotoshopGUI:
         self._create_widgets()
 
     def _create_widgets(self):
-        # === Control Panel (kiri) ===
+        # === Panel Kiri: Kontrol ===
         control = tk.Frame(self.root, width=300, bg="#f5f5f5", relief="groove", bd=1)
         control.pack(side=tk.LEFT, fill=tk.Y, padx=5, pady=5)
 
         tk.Label(control, text="🎨 Mini Photoshop", font=("Arial", 14, "bold"), bg="#f5f5f5").pack(pady=10)
 
-        # File ops
         tk.Button(control, text="📂 Load Image", command=self.load_image, width=25).pack(pady=3)
         tk.Button(control, text="💾 Save Image", command=self.save_image, width=25).pack(pady=3)
         tk.Button(control, text="🔄 Reset", command=self.reset, width=25).pack(pady=3)
 
         ttk.Separator(control, orient='horizontal').pack(fill='x', pady=8)
 
-        # Intensity
+        # Intensitas
         tk.Label(control, text="📊 Intensitas", font=("Arial", 10, "bold"), bg="#f5f5f5").pack()
         tk.Button(control, text="Grayscale", command=self.do_grayscale, width=25).pack(pady=2)
         tk.Button(control, text="Invert", command=self.do_invert, width=25).pack(pady=2)
 
+        # ✅ FIX: Gunakan value=0 & value=1.0 (bukan IntVar(0))
         self.brightness = tk.IntVar(value=0)
         self.contrast = tk.DoubleVar(value=1.0)
+
         tk.Label(control, text="Brightness", bg="#f5f5f5").pack()
         tk.Scale(control, from_=-100, to=100, orient=tk.HORIZONTAL,
                  variable=self.brightness, command=self.update_bc).pack()
@@ -64,28 +65,28 @@ class MiniPhotoshopGUI:
 
         ttk.Separator(control, orient='horizontal').pack(fill='x', pady=8)
 
-        # Edge
+        # Edge Detection
         tk.Label(control, text="🔍 Edge Detection", font=("Arial", 10, "bold"), bg="#f5f5f5").pack()
         tk.Button(control, text="Sobel", command=lambda: self.apply('edge', 'sobel'), width=25).pack(pady=2)
         tk.Button(control, text="Prewitt", command=lambda: self.apply('edge', 'prewitt'), width=25).pack(pady=2)
         tk.Button(control, text="Canny", command=lambda: self.apply('edge', 'canny'), width=25).pack(pady=2)
 
-        # === Display Area (kanan) ===
+        # === Panel Kanan: Tampilan ===
         display = tk.Frame(self.root, bg="white")
         display.pack(side=tk.RIGHT, expand=True, fill=tk.BOTH, padx=5, pady=5)
 
         self.img_label = tk.Label(display, text="🖼️ Gambar akan muncul di sini", bg="#e0e0e0", relief="sunken")
         self.img_label.pack(expand=True, fill=tk.BOTH, padx=10, pady=10)
 
-    # === Callbacks ===
+    # === File Operations ===
     def load_image(self):
-        path = filedialog.askopenfilename(filetypes=[("Images", "*.jpg *.png *.bmp")])
+        path = filedialog.askopenfilename(filetypes=[("Images", "*.jpg *.jpeg *.png *.bmp")])
         if path:
             img = cv2.imread(path)
             if img is None:
                 messagebox.showerror("Error", "Gagal membaca gambar!")
                 return
-            self.original_image = img.copy()
+            self.original_image = img.copy()   # ✅ SIMPAN GAMBAR ASLI
             self.current_image = img.copy()
             self._show_image()
             messagebox.showinfo("✔️", "Gambar berhasil dimuat!")
@@ -113,39 +114,41 @@ class MiniPhotoshopGUI:
     def _show_image(self):
         if self.current_image is None:
             return
-        # Convert BGR → RGB → PIL
         rgb = cv2.cvtColor(self.current_image, cv2.COLOR_BGR2RGB)
         pil_img = Image.fromarray(rgb)
-        # Resize agar sesuai window
         h = min(pil_img.height, 500)
         ratio = h / pil_img.height
         w = int(pil_img.width * ratio)
         pil_img = pil_img.resize((w, h), Image.LANCZOS)
         tk_img = ImageTk.PhotoImage(pil_img)
         self.img_label.config(image=tk_img, text="")
-        self.img_label.image = tk_img  # simpan referensi
+        self.img_label.image = tk_img
 
+    # ✅ FIX UTAMA: Selalu hitung dari original_image
     def update_bc(self, _=None):
-        if self.current_image is not None:
-            b = self.brightness.get()
-            c = self.contrast.get()
-            self.current_image = adjust_brightness_contrast(self.current_image, b, c)
-            self._show_image()
+        if self.original_image is None:
+            return
+        b = self.brightness.get()
+        c = self.contrast.get()
+        # ⚠️ PENTING: Gunakan original_image.copy() agar tidak merusak gambar asli!
+        temp_img = adjust_brightness_contrast(self.original_image.copy(), b, c)
+        self.current_image = temp_img
+        self._show_image()
 
-    # --- Actions ---
+    # === Actions ===
     def do_grayscale(self):
         if self.current_image is not None:
-            self.current_image = to_grayscale(self.current_image)
+            self.current_image = to_grayscale(self.original_image.copy())
             self._show_image()
 
     def do_invert(self):
         if self.current_image is not None:
-            self.current_image = invert(self.current_image)
+            self.current_image = invert(self.original_image.copy())
             self._show_image()
 
     def do_equalize(self):
         if self.current_image is not None:
-            self.current_image = histogram_equalization(self.current_image)
+            self.current_image = histogram_equalization(self.original_image.copy())
             self._show_image()
 
     def show_hist(self):
@@ -156,14 +159,14 @@ class MiniPhotoshopGUI:
             self.hist_canvas.get_tk_widget().pack(pady=5)
 
     def apply(self, op_type, param):
-        if self.current_image is None:
+        if self.original_image is None:
             messagebox.showwarning("⚠️", "Muat gambar dulu!")
             return
         try:
             if op_type == 'filter':
-                self.current_image = apply_filter(self.current_image, param)
+                self.current_image = apply_filter(self.original_image.copy(), param)
             elif op_type == 'edge':
-                self.current_image = edge_detection(self.current_image, param)
+                self.current_image = edge_detection(self.original_image.copy(), param)
             self._show_image()
         except Exception as e:
             messagebox.showerror("❌ Error", f"Gagal: {str(e)}")

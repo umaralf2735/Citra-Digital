@@ -1,11 +1,10 @@
-# image_processor.py
 import cv2
 import numpy as np
 
 def to_grayscale(img):
     if len(img.shape) == 3:
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        return cv2.cvtColor(gray, cv2.COLOR_GRAY2BGR)  # keep 3-channel
+        return cv2.cvtColor(gray, cv2.COLOR_GRAY2BGR)
     return img
 
 def invert(img):
