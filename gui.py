@@ -21,7 +21,7 @@ class MiniPhotoshopGUI:
         self._create_widgets()
 
     def _create_widgets(self):
-        # === Panel Kiri: Kontrol ===
+        
         control = tk.Frame(self.root, width=300, bg="#f5f5f5", relief="groove", bd=1)
         control.pack(side=tk.LEFT, fill=tk.Y, padx=5, pady=5)
 
@@ -33,12 +33,12 @@ class MiniPhotoshopGUI:
 
         ttk.Separator(control, orient='horizontal').pack(fill='x', pady=8)
 
-        # Intensitas
+        
         tk.Label(control, text="📊 Intensitas", font=("Arial", 10, "bold"), bg="#f5f5f5").pack()
         tk.Button(control, text="Grayscale", command=self.do_grayscale, width=25).pack(pady=2)
         tk.Button(control, text="Invert", command=self.do_invert, width=25).pack(pady=2)
 
-        # ✅ FIX: Gunakan value=0 & value=1.0 (bukan IntVar(0))
+        
         self.brightness = tk.IntVar(value=0)
         self.contrast = tk.DoubleVar(value=1.0)
 
@@ -51,13 +51,13 @@ class MiniPhotoshopGUI:
 
         ttk.Separator(control, orient='horizontal').pack(fill='x', pady=8)
 
-        # Histogram
+        
         tk.Button(control, text="📈 Histogram", command=self.show_hist, width=25).pack(pady=2)
         tk.Button(control, text="⚖️ Equalization", command=self.do_equalize, width=25).pack(pady=2)
 
         ttk.Separator(control, orient='horizontal').pack(fill='x', pady=8)
 
-        # Filtering
+        
         tk.Label(control, text="🔧 Filtering", font=("Arial", 10, "bold"), bg="#f5f5f5").pack()
         tk.Button(control, text="Mean Filter", command=lambda: self.apply('filter', 'mean'), width=25).pack(pady=2)
         tk.Button(control, text="Gaussian", command=lambda: self.apply('filter', 'gaussian'), width=25).pack(pady=2)
@@ -65,20 +65,20 @@ class MiniPhotoshopGUI:
 
         ttk.Separator(control, orient='horizontal').pack(fill='x', pady=8)
 
-        # Edge Detection
+        
         tk.Label(control, text="🔍 Edge Detection", font=("Arial", 10, "bold"), bg="#f5f5f5").pack()
         tk.Button(control, text="Sobel", command=lambda: self.apply('edge', 'sobel'), width=25).pack(pady=2)
         tk.Button(control, text="Prewitt", command=lambda: self.apply('edge', 'prewitt'), width=25).pack(pady=2)
         tk.Button(control, text="Canny", command=lambda: self.apply('edge', 'canny'), width=25).pack(pady=2)
 
-        # === Panel Kanan: Tampilan ===
+        
         display = tk.Frame(self.root, bg="white")
         display.pack(side=tk.RIGHT, expand=True, fill=tk.BOTH, padx=5, pady=5)
 
         self.img_label = tk.Label(display, text="🖼️ Gambar akan muncul di sini", bg="#e0e0e0", relief="sunken")
         self.img_label.pack(expand=True, fill=tk.BOTH, padx=10, pady=10)
 
-    # === File Operations ===
+    
     def load_image(self):
         path = filedialog.askopenfilename(filetypes=[("Images", "*.jpg *.jpeg *.png *.bmp")])
         if path:
@@ -86,7 +86,7 @@ class MiniPhotoshopGUI:
             if img is None:
                 messagebox.showerror("Error", "Gagal membaca gambar!")
                 return
-            self.original_image = img.copy()   # ✅ SIMPAN GAMBAR ASLI
+            self.original_image = img.copy()   
             self.current_image = img.copy()
             self._show_image()
             messagebox.showinfo("✔️", "Gambar berhasil dimuat!")
@@ -124,18 +124,18 @@ class MiniPhotoshopGUI:
         self.img_label.config(image=tk_img, text="")
         self.img_label.image = tk_img
 
-    # ✅ FIX UTAMA: Selalu hitung dari original_image
+    
     def update_bc(self, _=None):
         if self.original_image is None:
             return
         b = self.brightness.get()
         c = self.contrast.get()
-        # ⚠️ PENTING: Gunakan original_image.copy() agar tidak merusak gambar asli!
+        
         temp_img = adjust_brightness_contrast(self.original_image.copy(), b, c)
         self.current_image = temp_img
         self._show_image()
 
-    # === Actions ===
+    
     def do_grayscale(self):
         if self.current_image is not None:
             self.current_image = to_grayscale(self.original_image.copy())
