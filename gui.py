@@ -25,16 +25,16 @@ class MiniPhotoshopGUI:
         control = tk.Frame(self.root, width=300, bg="#f5f5f5", relief="groove", bd=1)
         control.pack(side=tk.LEFT, fill=tk.Y, padx=5, pady=5)
 
-        tk.Label(control, text="🎨 Mini Photoshop", font=("Arial", 14, "bold"), bg="#f5f5f5").pack(pady=10)
+        tk.Label(control, text=" Mini Photoshop", font=("Arial", 14, "bold"), bg="#f5f5f5").pack(pady=10)
 
-        tk.Button(control, text="📂 Load Image", command=self.load_image, width=25).pack(pady=3)
-        tk.Button(control, text="💾 Save Image", command=self.save_image, width=25).pack(pady=3)
-        tk.Button(control, text="🔄 Reset", command=self.reset, width=25).pack(pady=3)
+        tk.Button(control, text=" Load Image", command=self.load_image, width=25).pack(pady=3)
+        tk.Button(control, text=" Save Image", command=self.save_image, width=25).pack(pady=3)
+        tk.Button(control, text=" Reset", command=self.reset, width=25).pack(pady=3)
 
         ttk.Separator(control, orient='horizontal').pack(fill='x', pady=8)
 
         
-        tk.Label(control, text="📊 Intensitas", font=("Arial", 10, "bold"), bg="#f5f5f5").pack()
+        tk.Label(control, text=" Intensitas", font=("Arial", 10, "bold"), bg="#f5f5f5").pack()
         tk.Button(control, text="Grayscale", command=self.do_grayscale, width=25).pack(pady=2)
         tk.Button(control, text="Invert", command=self.do_invert, width=25).pack(pady=2)
 
@@ -58,7 +58,7 @@ class MiniPhotoshopGUI:
         ttk.Separator(control, orient='horizontal').pack(fill='x', pady=8)
 
         
-        tk.Label(control, text="🔧 Filtering", font=("Arial", 10, "bold"), bg="#f5f5f5").pack()
+        tk.Label(control, text=" Filtering", font=("Arial", 10, "bold"), bg="#f5f5f5").pack()
         tk.Button(control, text="Mean Filter", command=lambda: self.apply('filter', 'mean'), width=25).pack(pady=2)
         tk.Button(control, text="Gaussian", command=lambda: self.apply('filter', 'gaussian'), width=25).pack(pady=2)
         tk.Button(control, text="Median", command=lambda: self.apply('filter', 'median'), width=25).pack(pady=2)
@@ -66,7 +66,7 @@ class MiniPhotoshopGUI:
         ttk.Separator(control, orient='horizontal').pack(fill='x', pady=8)
 
         
-        tk.Label(control, text="🔍 Edge Detection", font=("Arial", 10, "bold"), bg="#f5f5f5").pack()
+        tk.Label(control, text="Edge Detection", font=("Arial", 10, "bold"), bg="#f5f5f5").pack()
         tk.Button(control, text="Sobel", command=lambda: self.apply('edge', 'sobel'), width=25).pack(pady=2)
         tk.Button(control, text="Prewitt", command=lambda: self.apply('edge', 'prewitt'), width=25).pack(pady=2)
         tk.Button(control, text="Canny", command=lambda: self.apply('edge', 'canny'), width=25).pack(pady=2)
@@ -75,7 +75,7 @@ class MiniPhotoshopGUI:
         display = tk.Frame(self.root, bg="white")
         display.pack(side=tk.RIGHT, expand=True, fill=tk.BOTH, padx=5, pady=5)
 
-        self.img_label = tk.Label(display, text="🖼️ Gambar akan muncul di sini", bg="#e0e0e0", relief="sunken")
+        self.img_label = tk.Label(display, text=" Gambar akan muncul di sini", bg="#e0e0e0", relief="sunken")
         self.img_label.pack(expand=True, fill=tk.BOTH, padx=10, pady=10)
 
     
@@ -169,4 +169,4 @@ class MiniPhotoshopGUI:
                 self.current_image = edge_detection(self.original_image.copy(), param)
             self._show_image()
         except Exception as e:
-            messagebox.showerror("❌ Error", f"Gagal: {str(e)}")
+            messagebox.showerror(" Error", f"Gagal: {str(e)}")
