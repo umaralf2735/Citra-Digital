@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini Photoshop Web</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar glass">
+            <h2>🎨 Mini WebShop</h2>
+            
+            <div class="upload-section">
+                <input type="file" id="fileInput" accept="image/*" hidden>
+                <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">📂 Load Image</button>
+                <button class="btn btn-success" id="downloadBtn">💾 Save Image</button>
+                <button class="btn btn-danger" id="resetBtn">🔄 Reset</button>
+            </div>
+            
+            <div class="tools-section" id="tools" style="opacity: 0.5; pointer-events: none;">
+                <!-- Intensitas -->
+                <div class="tool-group">
+                    <h3>⚙️ Intensitas</h3>
+                    <div class="grid-2">
+                        <button class="btn btn-tool" data-action="grayscale">Grayscale</button>
+                        <button class="btn btn-tool" data-action="invert">Invert</button>
+                    </div>
+                </div>
+
+                <!-- Brightness/Contrast -->
+                <div class="tool-group">
+                    <h3>☀️ Pencahayaan</h3>
+                    <div style="margin-bottom: 5px;">
+                        <label>Brightness: <span id="val-b">0</span></label>
+                        <input type="range" id="brightness" min="-100" max="100" value="0">
+                    </div>
+                    <div>
+                        <label>Contrast: <span id="val-c">1.0</span></label>
+                        <input type="range" id="contrast" min="0.1" max="3.0" step="0.1" value="1.0">
+                    </div>
+                    <button class="btn btn-primary" id="applyBC" style="margin-top: 15px;">Terapkan Cahaya</button>
+                </div>
+
+                <!-- Creative Filters -->
+                <div class="tool-group">
+                    <h3>🎭 Creative Filters</h3>
+                    <div class="grid-3">
+                        <button class="btn btn-tool btn-purple" data-action="creative" data-param="cartoon">Cartoon</button>
+                        <button class="btn btn-tool btn-purple" data-action="creative" data-param="sketch">Sketch</button>
+                        <button class="btn btn-tool btn-purple" data-action="creative" data-param="sepia">Sepia</button>
+                    </div>
+                </div>
+
+                <!-- Transformasi -->
+                <div class="tool-group">
+                    <h3>🔄 Transformasi</h3>
+                    <div class="grid-2">
+                        <button class="btn btn-tool btn-green" data-action="transform" data-param="ccw">Rot Kiri</button>
+                        <button class="btn btn-tool btn-green" data-action="transform" data-param="cw">Rot Kanan</button>
+                        <button class="btn btn-tool btn-green" data-action="transform" data-param="h">Flip H</button>
+                        <button class="btn btn-tool btn-green" data-action="transform" data-param="v">Flip V</button>
+                    </div>
+                </div>
+
+                <!-- Advanced -->
+                <div class="tool-group">
+                    <h3>✨ Advanced & Noise</h3>
+                    <div class="grid-2">
+                        <button class="btn btn-tool btn-red" data-action="advanced" data-param="sharpen">Sharpen</button>
+                        <button class="btn btn-tool btn-red" data-action="advanced" data-param="emboss">Emboss</button>
+                        <button class="btn btn-tool btn-red" data-action="advanced" data-param="vignette">Vignette</button>
+                        <button class="btn btn-tool btn-red" data-action="advanced" data-param="noise">Noise</button>
+                    </div>
+                </div>
+                
+                <!-- Filter Lanjutan -->
+                <div class="tool-group">
+                    <h3>🔍 Edge & Filters</h3>
+                    <div class="grid-3">
+                        <button class="btn btn-tool" data-action="edge" data-param="sobel">Sobel</button>
+                        <button class="btn btn-tool" data-action="edge" data-param="canny">Canny</button>
+                        <button class="btn btn-tool" data-action="filter" data-param="median">Median</button>
+                    </div>
+                </div>
+
+            </div>
+        </aside>
+
+        <!-- Main Display -->
+        <main class="main-display glass">
+            <div id="image-container" class="image-wrapper">
+                <div class="placeholder-text">
+                    <span style="font-size: 3rem;">✨</span><br>
+                    Silakan Load Image untuk memulai
+                </div>
+                <img id="mainImage" src="" alt="Canvas" style="display: none;">
+            </div>
+            <!-- Loading overlay -->
+            <div id="loader" class="loader-overlay" style="display: none;">
+                <div class="spinner"></div>
+                <p style="margin-top:20px; font-weight: 600;">Memproses...</p>
+            </div>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
